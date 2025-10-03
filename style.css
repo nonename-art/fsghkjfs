@@ -46,7 +46,7 @@
 
         header {
             background: linear-gradient(to bottom, var(--bg-panel) 75%, hsla(0, 0%, 100%, 0));
-            padding: 0 var(--padding-base) 10px;
+            padding: 0px var(--padding-base) 10px;
             box-shadow: none;
             display: flex;
             align-items: center;
@@ -57,9 +57,10 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            right: 0;
             pointer-events: none;
-            transition: left 0.3s ease, width 0.3s ease;
+            transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         header>* {
@@ -97,7 +98,7 @@
 
         header h1 {
             color: var(--text-primary);
-            text-align: left;
+            text-align: center;
             font-size: 1.3em;
             font-weight: 700;
             margin: 0;
@@ -118,6 +119,8 @@
             flex-grow: 1;
             overflow: hidden;
             position: relative;
+            transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .overlay {
@@ -150,7 +153,8 @@
             flex-direction: column;
             box-sizing: border-box;
             padding: 20px var(--padding-base) var(--padding-base);
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease,
+                margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         main.content.sidebar-collapsed aside.sidebar {
@@ -222,7 +226,7 @@
             scrollbar-gutter: stable;
         }
 
-        /*侧边栏分割线*/
+        /* 侧边栏分割线 */
         .sidebar-conversations::before {
             content: '';
             display: block;
@@ -230,7 +234,6 @@
             background-color: var(--color-outline);
             margin: 8px 16px;
         }
-
 
         body.initial-state .sidebar-conversations::before {
             display: none;
@@ -252,7 +255,7 @@
             font-style: italic;
         }
 
-        /* 搜索结果条目的样式 */
+        /* 搜索结果条目 */
         .list-item-base {
             display: grid;
             grid-template-columns: auto 1fr;
@@ -298,17 +301,14 @@
             width: 100%;
         }
 
-        /* 将图标放在名为 "icon" 的网格区域 */
         .list-item-base svg {
             grid-area: icon;
         }
 
-        /* 将标题放在名为 "title" 的网格区域 */
         .sidebar-item-title {
             grid-area: title;
         }
 
-        /* 将日期放在名为 "date" 的网格区域 */
         .sidebar-item-date {
             grid-area: date;
         }
@@ -434,7 +434,6 @@
             display: none;
         }
 
-        /*移除空消息的边距*/
         .message.empty-message {
             margin: 0;
             padding: 0;
@@ -902,21 +901,6 @@
             margin-left: 0;
         }
 
-        @media (max-width: 768px) {
-            :root {
-                --sidebar-width: 260px;
-                --padding-base: 10px;
-            }
-
-            header h1 {
-                font-size: 1.3em;
-            }
-
-            .message {
-                max-width: 90%;
-            }
-        }
-
         .avatar-frame {
             position: relative;
             cursor: pointer;
@@ -1000,7 +984,7 @@
             border-color: transparent;
         }
 
-        /*记忆库和自定义指令*/
+        /* 记忆库和自定义指令 */
         #infoBtn,
         #memoryMapBtn {
             background: none;
@@ -1050,7 +1034,6 @@
             max-width: 850px;
         }
 
-        /* 全局记忆导图 */
         #memoryMapHeader {
             padding: 24px 0 16px;
             text-align: center;
@@ -1103,21 +1086,6 @@
             position: relative;
         }
 
-        /*小圆球*/
-        .memory-node::before {
-            content: '';
-            position: absolute;
-            left: -16px;
-            top: 6.5px;
-
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: var(--color-outline);
-
-            z-index: -1;
-        }
-
         .memory-node:last-child {
             margin-bottom: 0;
         }
@@ -1133,6 +1101,42 @@
             color: var(--text-secondary);
             opacity: 0.8;
         }
+
+        #infoModal .modal-content,
+        #memoryMapModal .modal-content {
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+        }
+
+        #infoModal .modal-content::-webkit-scrollbar,
+        #memoryMapModal .modal-content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        #infoModal .modal-content::-webkit-scrollbar-track,
+        #memoryMapModal .modal-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #infoModal .modal-content::-webkit-scrollbar-thumb,
+        #memoryMapModal .modal-content::-webkit-scrollbar-thumb {
+            background-color: transparent;
+            border-radius: 10px;
+            transition: background-color .3s ease-in-out;
+        }
+
+        #infoModal .modal-content.is-scrolling,
+        #memoryMapModal .modal-content.is-scrolling {
+            scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+            transition: scrollbar-color .3s ease-in-out; 
+        }
+
+        #infoModal .modal-content.is-scrolling::-webkit-scrollbar-thumb,
+        #memoryMapModal .modal-content.is-scrolling::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.3);
+            transition: background-color .3s ease-in-out; 
+        }
+
 
         .modal-overlay {
             position: fixed;
@@ -1159,7 +1163,6 @@
             pointer-events: auto;
         }
 
-        /*弹窗内容*/
         .modal-content {
             background-color: var(--bg-panel);
             padding: 0 24px;
@@ -1197,17 +1200,18 @@
             background: transparent;
         }
 
-        .modal-content::-webkit-scrollbar-thumb,
-        .sidebar-conversations::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 999px;
-            border: 3px solid transparent;
-            background-clip: content-box;
+        .sidebar-conversations {
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+            transition: scrollbar-color .3s ease-in-out;
         }
 
-        .modal-content::-webkit-scrollbar-thumb:hover,
-        .sidebar-conversations::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(0, 0, 0, 0.5);
+        .sidebar-conversations.is-scrolling {
+            scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+        }
+
+        .sidebar-conversations.is-scrolling::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.3);
         }
 
         #infoModalContent {
@@ -1253,7 +1257,7 @@
             margin-top: 45px;
         }
 
-        /* 隐藏Prompt 面板的自定义滚动条 */
+        /* 隐藏Prompt 面板的滚动条 */
         .prompt-content::-webkit-scrollbar {
             display: none;
         }
@@ -1263,7 +1267,7 @@
         }
 
 
-        /* 初始加载按钮的样式  */
+        /* 初始加载按钮 */
         #initialLoadContainer {
             margin: auto;
             display: flex;
@@ -1303,7 +1307,7 @@
             display: none;
         }
 
-        /* DALL-E 图片与 Prompt 面板的样式 */
+        /* 图片与 Prompt 面板 */
         .image-with-prompt-wrapper {
             display: block;
             max-width: 100%;
@@ -1456,7 +1460,7 @@
             gap: 4px;
         }
 
-        /* 三大金刚的统一基础样式 */
+        /* 三大金刚 */
         .sidebar-action-item {
             display: flex;
             align-items: center;
@@ -1501,7 +1505,7 @@
             display: none;
         }
 
-        /*思考栏*/
+        /* 思考栏 */
         .thought-process {
             position: relative;
             margin: 10px auto 25px auto;
@@ -1631,7 +1635,10 @@
             flex-grow: 1;
             background-color: transparent;
             overflow-y: auto;
-            padding: calc(var(--header-height) + var(--padding-base)) 15px calc(var(--padding-base) + env(safe-area-inset-bottom)) 15px;
+            padding-left: clamp(15px, 5vw, 120px);
+            padding-right: clamp(15px, 5vw, 120px);
+            padding-top: calc(var(--header-height) + var(--padding-base));
+            padding-bottom: calc(var(--padding-base) + env(safe-area-inset-bottom));
             display: flex;
             flex-direction: column;
 
@@ -1667,10 +1674,6 @@
             background-color: rgba(0, 0, 0, 0.3);
         }
 
-        section.chat-area::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(0, 0, 0, 0.3);
-        }
-
         section.chat-area.is-scrolling {
             scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
         }
@@ -1694,7 +1697,7 @@
             position: relative;
         }
 
-        /*搜索框图标*/
+        /* 搜索框图标 */
         .sidebar-search-wrapper svg {
             position: absolute;
             left: 16px;
@@ -1729,12 +1732,12 @@
             transition: opacity 0.2s ease-in-out;
         }
 
-        /*  "×" 图标 */
+        /* ×图标 */
         #searchInput::-webkit-search-cancel-button {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235a5562'%3e%3cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3e%3c/svg%3e");
         }
 
-        /*x悬停高亮*/
+        /* x悬停高亮 */
         #searchInput::-webkit-search-cancel-button:hover {
             opacity: 1;
         }
@@ -1791,9 +1794,8 @@
         }
 
         @media (min-width: 769px) {
-            section.chat-area {
-                padding-left: 35px;
-                padding-right: 35px;
+            :root {
+                --right-panel-width: 350px;
             }
 
             aside.sidebar {
@@ -1804,7 +1806,6 @@
                 border-radius: var(--border-radius-lg);
                 background-color: rgb(247, 247, 251);
                 overflow: hidden;
-                transition: transform 0.3s ease, margin-left 0.3s ease, box-shadow 0.3s ease;
             }
 
             .sidebar-header {
@@ -1813,18 +1814,25 @@
 
             body.sidebar-is-open header {
                 left: 0;
-                width: 100%;
             }
 
-            /*桌面端侧边栏折叠*/
+            body.right-panel-is-open header {
+                right: var(--right-panel-width);
+                transition: transform 0.3s ease, margin-left 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            body:not(.right-panel-is-open) header {
+                right: 0;
+            }
+
+            /* 桌面端侧边栏折叠 */
             main.content.sidebar-collapsed aside.sidebar {
                 transform: translateX(-100%);
                 margin-left: calc(-1 * var(--sidebar-width));
             }
 
             body:not(.sidebar-is-open) header {
-                left: calc(var(--sidebar-width) + 8px + 8px);
-                width: calc(100% - (var(--sidebar-width) + 8px + 8px));
+                left: calc(var(--sidebar-width) + 8px);
             }
 
             .overlay {
@@ -1832,17 +1840,92 @@
             }
 
             .modal-overlay {
-                padding-right: 0;
+                padding: 0;
             }
 
-            .modal-content {
-                max-height: calc(100dvh - 70px - 20px - env(safe-area-inset-bottom));
+            #infoModal .modal-content,
+            #memoryMapModal .modal-content {
+                position: static;
+                width: 100%;
+                max-width: 100%;
 
-                width: auto;
-                margin-left: 10px;
-                margin-right: 10px;
+                height: 100%;
+                max-height: 100vh;
+                margin: 0;
+                border-radius: 0;
+                opacity: 1;
+
+                box-sizing: border-box;
+                overflow-y: auto;
+                pointer-events: auto;
+                transform: none;
+                transition: transform 0.3s ease;
             }
 
+            #infoModal,
+            #memoryMapModal {
+                z-index: 102;
+                display: block;
+                align-items: unset;
+                justify-content: unset;
+
+                position: fixed;
+                top: 0;
+                left: auto;
+                right: 0;
+
+                width: var(--right-panel-width);
+                height: 100vh;
+                border-radius: 0;
+
+                background-color: transparent;
+                pointer-events: none;
+
+                transform: translateX(100%);
+                opacity: 1;
+                transition: transform 0.3s ease, margin-left 0.3s ease;
+            }
+
+            #infoModal.visible,
+            #memoryMapModal.visible {
+                transform: translateX(0);
+            }
+
+            body.right-panel-is-open main.content {
+                margin-right: var(--right-panel-width);
+            }
+
+            #infoModal .info-label,
+            #memoryMapModal .memory-conversation-title {
+                position: sticky;
+                top: 0;
+                z-index: 10;
+
+                padding-top: 15px;
+                padding-bottom: 15px;
+
+                margin-left: -24px;
+                margin-right: -24px;
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 260px;
+                --padding-base: 10px;
+            }
+
+            header h1 {
+                text-align: left;
+                font-size: 1.3em;
+            }
+
+            .message {
+                max-width: 90%;
+            }
         }
 
         body.dark-theme {
@@ -1874,15 +1957,45 @@
             background-color: var(--background-mask);
         }
 
+        body.dark-theme .modal-content {
+            background-color: rgb(31, 29, 37);
+            scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+        }
+
         body.dark-theme aside.sidebar,
         body.dark-theme #infoModalContent,
         body.dark-theme #infoModalContent .info-label,
         body.dark-theme #memoryMapModal .modal-content,
         body.dark-theme #memoryMapHeader,
         body.dark-theme .memory-conversation-title {
-            background-color: rgb(27, 26, 34);
+            background-color: rgb(31, 29, 37);
         }
 
+        body.dark-theme #infoModal .modal-content.is-scrolling,
+        body.dark-theme #memoryMapModal .modal-content.is-scrolling {
+            scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+            transition: scrollbar-color .3s ease-in-out;
+        }
+
+        body.dark-theme #infoModal .modal-content.is-scrolling::-webkit-scrollbar-thumb,
+        body.dark-theme #memoryMapModal .modal-content.is-scrolling::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.3);
+            transition: background-color .3s ease-in-out;
+        }
+
+        @media (min-width: 769px) {
+            body.dark-theme .modal-content {
+                background-color: rgb(22, 21, 26);
+            }
+
+            body.dark-theme #infoModalContent,
+            body.dark-theme #infoModalContent .info-label,
+            body.dark-theme #memoryMapModal .modal-content,
+            body.dark-theme #memoryMapHeader,
+            body.dark-theme .memory-conversation-title {
+                background-color: rgb(22, 21, 26);
+            }
+        }
 
         body.dark-theme .sidebar-search-wrapper:focus-within {
             background-color: rgb(39, 36, 49);
@@ -1909,20 +2022,12 @@
             background-color: rgb(39, 36, 49);
         }
 
-        /*滚动条*/
-        body.dark-theme .modal-content {
-            background-color: rgb(31, 29, 37);
+        body.dark-theme .sidebar-conversations.is-scrolling {
             scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
         }
 
-        body.dark-theme .modal-content::-webkit-scrollbar-thumb,
-        body.dark-theme .sidebar-conversations::-webkit-scrollbar-thumb {
+        body.dark-theme .sidebar-conversations.is-scrolling::-webkit-scrollbar-thumb {
             background-color: rgba(255, 255, 255, 0.3);
-        }
-
-        body.dark-theme .modal-content::-webkit-scrollbar-thumb:hover,
-        body.dark-theme .sidebar-conversations::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(255, 255, 255, 0.5);
         }
 
         body.dark-theme #searchInput {
@@ -1992,4 +2097,7 @@
         body.dark-theme .copy-code-btn.copied {
             background-color: #0f5132;
             color: #d1e7dd;
+        }
+        .citation-modal-card {
+            background-color:rgb(31, 29, 37);
         }
