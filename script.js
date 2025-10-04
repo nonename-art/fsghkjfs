@@ -1161,7 +1161,8 @@ async function displayConversation(conversationId, targetMessageId = null) {
         infoModalContent.innerHTML = `${userProfileHTML}<div class="info-item"><span class="info-label">User Instructions:</span><pre>${escapeHtml(cleanInstructions.trim())}</pre></div>`;
         infoBtn.disabled = false;
     }
-    memoryMapBtn.classList.toggle('visible', allMemoryData.length > 0);
+     memoryMapBtn.classList.add('visible');
+    memoryMapBtn.disabled = !(allMemoryData && allMemoryData.length > 0);
     chatArea.style.visibility = 'hidden';
 
     const messages = getMessagesFromMapping(conversation, targetMessageId);
@@ -1253,12 +1254,14 @@ function setInitialSidebarState() {
 }
 
 function updateRightPanelBodyClass() {
-    const isPanelVisible = document.querySelector('#infoModal.visible, #memoryMapModal.visible');
+    document.body.classList.remove('right-panel-is-open', 'info-panel-is-open', 'memory-map-is-open');
 
-    if (isPanelVisible && window.innerWidth >= 769) {
-        document.body.classList.add('right-panel-is-open');
-    } else {
-        document.body.classList.remove('right-panel-is-open');
+    const isInfoVisible = infoModal.classList.contains('visible');
+    const isMemoryVisible = memoryMapModal.classList.contains('visible');
+    if (isInfoVisible) {
+        document.body.classList.add('right-panel-is-open', 'info-panel-is-open');
+    } else if (isMemoryVisible) {
+        document.body.classList.add('right-panel-is-open', 'memory-map-is-open');
     }
 }
 
@@ -1283,9 +1286,10 @@ function collapsePromptContainer(container) {
 }
 
 
-function handleFolderSelect(event) {
+function handleFileSelect(event) {
     const files = event.target.files;
     if (!files || files.length === 0) return;
+
     if (Object.keys(fileMap).length > 0) {
         Object.values(fileMap).forEach(value => {
             if (typeof value === 'string' && value.startsWith('blob:')) {
@@ -1299,16 +1303,22 @@ function handleFolderSelect(event) {
     searchIndex = [];
     let jsonFile = null;
 
-    for (const file of files) {
-        if (file.webkitRelativePath.endsWith('conversations.json')) {
-            jsonFile = file;
+    const inputId = event.target.id;
+
+    if (inputId === 'folderInput') {
+        for (const file of files) {
+            if (file.webkitRelativePath.endsWith('conversations.json')) {
+                jsonFile = file;
+            }
+            fileMap[file.name] = file;
         }
-        fileMap[file.name] = file;
+    } else { 
+        jsonFile = files[0];
     }
 
     if (!jsonFile) {
-        alert('Error: "conversations.json" not found in the selected folder.');
-        renderSidebar();
+        const expectedFile = inputId === 'folderInput' ? '"conversations.json"' : '一个 JSON 文件';
+        alert(`错误: 未在您的选择中找到${expectedFile}。`);
         return;
     }
 
@@ -1328,17 +1338,14 @@ function handleFolderSelect(event) {
                 allConversations = message.data.allConversations;
                 conversationDataMap = new Map(message.data.conversationDataMap);
                 allMemoryData = message.data.allMemoryData || [];
-
                 renderSidebar();
                 break;
-
             case 'search-index-done':
                 searchIndex = message.data.searchIndex;
                 searchInput.disabled = false;
                 searchInput.placeholder = DEFAULT_SEARCH_PLACEHOLDER;
                 worker.terminate();
                 break;
-
             case 'error':
                 alert('处理数据时发生错误: ' + message.message);
                 sidebar.innerHTML = '<p class="sidebar-placeholder">加载失败 (´;ω;`)</p>';
@@ -1515,7 +1522,8 @@ document.addEventListener('click', function (e) {
     }
 });
 
-folderInput.addEventListener('change', handleFolderSelect);
+folderInput.addEventListener('change', handleFileSelect);
+jsonFileInput.addEventListener('change', handleFileSelect);
 
 sidebarToggle.addEventListener('click', () => {
     const isOpening = mainContent.classList.contains('sidebar-collapsed');
